@@ -25,7 +25,7 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
             enableScripts: true,
             localResourceRoots: [
                 vscode.Uri.joinPath(this.context.extensionUri, 'media'),
-                vscode.Uri.joinPath(this.context.extensionUri, 'node_modules', 'pdfjs-dist'),
+                vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'pdfjs'),
             ],
         };
 
@@ -35,10 +35,10 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
 
         // Get URIs for PDF.js
         const pdfJsUri = webviewPanel.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'node_modules', 'pdfjs-dist', 'build', 'pdf.min.mjs')
+            vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'pdfjs', 'pdf.min.mjs')
         );
         const pdfWorkerUri = webviewPanel.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'node_modules', 'pdfjs-dist', 'build', 'pdf.worker.min.mjs')
+            vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'pdfjs', 'pdf.worker.min.mjs')
         );
         const styleUri = webviewPanel.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'pdfViewer.css')
