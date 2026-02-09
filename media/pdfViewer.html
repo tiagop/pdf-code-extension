@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}} 'unsafe-inline'; script-src 'nonce-{{nonce}}'; worker-src blob:; img-src {{cspSource}} data: blob:;">
+    <link href="{{styleUri}}" rel="stylesheet">
+    <title>PDF Viewer</title>
+</head>
+<body>
+    <div id="toolbar">
+        <button id="prev-page" title="Previous Page">◀</button>
+        <span id="page-info">Page <span id="current-page">1</span> of <span id="total-pages">-</span></span>
+        <button id="next-page" title="Next Page">▶</button>
+        <span class="separator"></span>
+        <button id="zoom-out" title="Zoom Out">−</button>
+        <span id="zoom-level">100%</span>
+        <button id="zoom-in" title="Zoom In">+</button>
+        <button id="fit-width" title="Fit Width">↔</button>
+    </div>
+    <div id="pdf-container">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+    
+    <script nonce="{{nonce}}" type="module">
+        import * as pdfjsLib from '{{pdfJsUri}}';
+        
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '{{pdfWorkerUri}}';
+
+        const pdfData = atob('{{pdfBase64}}');
+        const pdfArray = new Uint8Array(pdfData.length);
+        for (let i = 0; i < pdfData.length; i++) {
+            pdfArray[i] = pdfData.charCodeAt(i);
+        }
+
+        let pdfDoc = null;
+        let currentPage = 1;
+        let scale = 1.0;
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+
+        async function renderPage(pageNum) {
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale });
+            
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            await page.render(renderContext).promise;
+            
+            document.getElementById('current-page').textContent = pageNum;
+        }
+
+        async function init() {
+            try {
+                pdfDoc = await pdfjsLib.getDocument({ data: pdfArray }).promise;
+                document.getElementById('total-pages').textContent = pdfDoc.numPages;
+                await renderPage(currentPage);
+            } catch (error) {
+                console.error('Error loading PDF:', error);
+                document.getElementById('pdf-container').innerHTML = 
+                    '<p style="color: red; padding: 20px;">Error loading PDF: ' + error.message + '</p>';
+            }
+        }
+
+        // Navigation
+        document.getElementById('prev-page').addEventListener('click', async () => {
+            if (currentPage > 1) {
+                currentPage--;
+                await renderPage(currentPage);
+            }
+        });
+
+        document.getElementById('next-page').addEventListener('click', async () => {
+            if (currentPage < pdfDoc.numPages) {
+                currentPage++;
+                await renderPage(currentPage);
+            }
+        });
+
+        // Zoom controls
+        document.getElementById('zoom-in').addEventListener('click', async () => {
+            scale += 0.25;
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+            await renderPage(currentPage);
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', async () => {
+            if (scale > 0.25) {
+                scale -= 0.25;
+                document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+                await renderPage(currentPage);
+            }
+        });
+
+        document.getElementById('fit-width').addEventListener('click', async () => {
+            const page = await pdfDoc.getPage(currentPage);
+            const viewport = page.getViewport({ scale: 1.0 });
+            const container = document.getElementById('pdf-container');
+            scale = (container.clientWidth - 40) / viewport.width;
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+            await renderPage(currentPage);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', async (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                if (currentPage > 1) {
+                    currentPage--;
+                    await renderPage(currentPage);
+                }
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                if (currentPage < pdfDoc.numPages) {
+                    currentPage++;
+                    await renderPage(currentPage);
+                }
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--vscode-editor-background);
+    color: var(--vscode-editor-foreground);
+    font-family: var(--vscode-font-family);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--vscode-editorWidget-background);
+    border-bottom: 1px solid var(--vscode-editorWidget-border);
+    flex-shrink: 0;
+}
+
+#toolbar button {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 32px;
+}
+
+#toolbar button:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+#toolbar button:active {
+    transform: scale(0.98);
+}
+
+#page-info, #zoom-level {
+    font-size: 13px;
+    color: var(--vscode-foreground);
+    min-width: 80px;
+    text-align: center;
+}
+
+.separator {
+    width: 1px;
+    height: 20px;
+    background-color: var(--vscode-editorWidget-border);
+    margin: 0 8px;
+}
+
+#pdf-container {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: var(--vscode-editor-background);
+}
+
+#pdf-canvas {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: white;
+}
+
+/* Scrollbar styling */
+#pdf-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+#pdf-container::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+#pdf-container::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 5px;
+}
+
+#pdf-container::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}
