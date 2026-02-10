@@ -2,7 +2,7 @@
 
 All notable changes to the "pdf-viewer-for-vs-code" extension will be documented in this file.
 
-## [1.0.2] - 2026-02-09
+## [1.0.2] - 2026-02-10
 
 - Text is now selectable.
 
