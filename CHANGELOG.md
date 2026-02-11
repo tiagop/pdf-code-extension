@@ -2,6 +2,10 @@
 
 All notable changes to the "pdf-viewer-for-vs-code" extension will be documented in this file.
 
+## [1.0.3] - 2026-02-11
+
+- Add logo.
+
 ## [1.0.2] - 2026-02-10
 
 - Text is now selectable.
