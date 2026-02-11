@@ -4,6 +4,7 @@
   "description": "Extension that allows to visualize PDF files inside VS Code.",
   "version": "1.0.2",
   "publisher": "Pirespt",
+  "icon": "assets/images/PDFViewer.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/tiagop/pdf-code-extension"
