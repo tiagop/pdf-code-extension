@@ -17,6 +17,7 @@
         <span id="zoom-level">100%</span>
         <button id="zoom-in" title="Zoom In">+</button>
         <button id="fit-width" title="Fit Width">↔</button>
+        <button id="grayscale" title="Toggle Grayscale">Grayscale</button>
     </div>
     <div id="pdf-container">
         <div id="page-wrapper">
@@ -123,6 +124,19 @@
             scale = (container.clientWidth - 40) / viewport.width;
             document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
             await renderPage(currentPage);
+        });
+
+        document.getElementById('grayscale').addEventListener('click', () => {
+            canvas.classList.toggle('grayscale');
+            
+            if(canvas.classList.contains('grayscale')) {
+                document.getElementById('grayscale').style.backgroundColor = '#ddd';
+                document.getElementById('grayscale').style.color = '#555';
+            }
+            else {
+                document.getElementById('grayscale').style.backgroundColor = '';
+                document.getElementById('grayscale').style.color = '';
+            }
         });
 
         // Keyboard navigation

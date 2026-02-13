@@ -77,6 +77,10 @@ body {
     background-color: white;
 }
 
+#pdf-canvas.grayscale {
+    filter: grayscale(100%);
+}
+
 /* pdf.js TextLayer styles */
 .textLayer {
     position: absolute;
