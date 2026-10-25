@@ -7,6 +7,7 @@ A lightweight Visual Studio Code extension that lets you view PDF files directly
 - **In-editor PDF rendering** — open any `.pdf` file and it displays in a VS Code tab using [PDF.js](https://mozilla.github.io/pdf.js/).
 - **Page navigation** — move between pages with previous/next controls.
 - **Zoom controls** — zoom in, zoom out, and fit-to-width.
+- **Grayscale toggle** — view any page in grayscale; the setting is remembered for each PDF within a workspace.
 - **Retained context** — the webview keeps its state when switching between tabs.
 
 ## Getting Started

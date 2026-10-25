@@ -17,7 +17,7 @@
         <span id="zoom-level">100%</span>
         <button id="zoom-in" title="Zoom In">+</button>
         <button id="fit-width" title="Fit Width">↔</button>
-        <button id="grayscale" title="Toggle Grayscale">Grayscale</button>
+        <button id="grayscale" title="Toggle Grayscale" aria-pressed="false">Grayscale</button>
     </div>
     <div id="pdf-container">
         <div id="page-wrapper">
@@ -37,6 +37,8 @@
             pdfArray[i] = pdfData.charCodeAt(i);
         }
 
+        const vscode = acquireVsCodeApi();
+
         let pdfDoc = null;
         let currentPage = 1;
         let scale = 1.0;
@@ -44,6 +46,16 @@
         const ctx = canvas.getContext('2d');
 
         const textLayerDiv = document.getElementById('text-layer');
+        const pageWrapper = document.getElementById('page-wrapper');
+        const grayscaleButton = document.getElementById('grayscale');
+
+        function setGrayscale(on) {
+            pageWrapper.classList.toggle('grayscale', on);
+            grayscaleButton.setAttribute('aria-pressed', String(on));
+            vscode.setState({ ...vscode.getState(), grayscale: on });
+        }
+
+        setGrayscale(vscode.getState()?.grayscale ?? '{{grayscale}}' === 'true');
 
         async function renderPage(pageNum) {
             const page = await pdfDoc.getPage(pageNum);
@@ -126,17 +138,10 @@
             await renderPage(currentPage);
         });
 
-        document.getElementById('grayscale').addEventListener('click', () => {
-            canvas.classList.toggle('grayscale');
-            
-            if(canvas.classList.contains('grayscale')) {
-                document.getElementById('grayscale').style.backgroundColor = '#ddd';
-                document.getElementById('grayscale').style.color = '#555';
-            }
-            else {
-                document.getElementById('grayscale').style.backgroundColor = '';
-                document.getElementById('grayscale').style.color = '';
-            }
+        grayscaleButton.addEventListener('click', () => {
+            const on = grayscaleButton.getAttribute('aria-pressed') !== 'true';
+            setGrayscale(on);
+            vscode.postMessage({ type: 'grayscale', value: on });
         });
 
         // Keyboard navigation

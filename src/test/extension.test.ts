@@ -94,6 +94,7 @@ suite('HTML Template', () => {
 			'{{styleUri}}',
 			'{{pdfJsUri}}',
 			'{{pdfWorkerUri}}',
+			'{{grayscale}}',
 			'{{pdfBase64}}',
 		];
 
@@ -132,6 +133,7 @@ suite('HTML Template', () => {
 			.replace(/\{\{styleUri\}\}/g, 'https://test/style.css')
 			.replace(/\{\{pdfJsUri\}\}/g, 'https://test/pdf.min.mjs')
 			.replace(/\{\{pdfWorkerUri\}\}/g, 'https://test/pdf.worker.min.mjs')
+			.replace(/\{\{grayscale\}\}/g, 'false')
 			.replace(/\{\{pdfBase64\}\}/g, 'dGVzdA==');
 
 		// After replacement, no placeholders should remain
@@ -152,7 +154,22 @@ suite('HTML Template', () => {
 		assert.ok(html.includes('id="zoom-in"'), 'Should have zoom-in button');
 		assert.ok(html.includes('id="zoom-out"'), 'Should have zoom-out button');
 		assert.ok(html.includes('id="fit-width"'), 'Should have fit-width button');
+		assert.ok(html.includes('id="grayscale"'), 'Should have grayscale button');
+		assert.ok(
+			/id="grayscale"[^>]*aria-pressed="false"/.test(html),
+			'Grayscale button should expose its toggle state via aria-pressed'
+		);
+		assert.ok(html.includes('id="page-wrapper"'), 'Should have page-wrapper element');
 		assert.ok(html.includes('id="pdf-canvas"'), 'Should have pdf-canvas element');
+	});
+
+	test('Stylesheet should hide the canvas pdf.js TextLayer appends to body', () => {
+		const css = fs.readFileSync(path.join(mediaDir, 'pdfViewer.css'), 'utf8');
+
+		assert.ok(
+			/\.hiddenCanvasElement\s*\{[^}]*display:\s*none/.test(css),
+			'.hiddenCanvasElement must be display: none or it squeezes the viewer'
+		);
 	});
 });
 

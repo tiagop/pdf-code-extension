@@ -29,6 +29,13 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
             ],
         };
 
+        const grayscaleKey = `grayscale:${document.uri.toString()}`;
+        webviewPanel.webview.onDidReceiveMessage(message => {
+            if (message?.type === 'grayscale') {
+                this.context.workspaceState.update(grayscaleKey, message.value === true ? true : undefined);
+            }
+        });
+
         // Read the PDF file
         const pdfData = await vscode.workspace.fs.readFile(document.uri);
         const pdfBase64 = Buffer.from(pdfData).toString('base64');
@@ -49,7 +56,8 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
             pdfBase64,
             pdfJsUri,
             pdfWorkerUri,
-            styleUri
+            styleUri,
+            this.context.workspaceState.get<boolean>(grayscaleKey, false)
         );
     }
 
@@ -58,7 +66,8 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
         pdfBase64: string,
         pdfJsUri: vscode.Uri,
         pdfWorkerUri: vscode.Uri,
-        styleUri: vscode.Uri
+        styleUri: vscode.Uri,
+        grayscale: boolean
     ): string {
         const nonce = getNonce();
 
@@ -70,6 +79,7 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
             .replace(/\{\{styleUri\}\}/g, styleUri.toString())
             .replace(/\{\{pdfJsUri\}\}/g, pdfJsUri.toString())
             .replace(/\{\{pdfWorkerUri\}\}/g, pdfWorkerUri.toString())
+            .replace(/\{\{grayscale\}\}/g, String(grayscale))
             .replace(/\{\{pdfBase64\}\}/g, pdfBase64);
 
         return html;
