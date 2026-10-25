@@ -2,7 +2,7 @@
 
 All notable changes to the "pdf-viewer-for-vs-code" extension will be documented in this file.
 
-## [Unreleased]
+## [1.0.6] - 2026-10-25
 
 - Update PDF.js to 6.4.
 - Fix JPEG 2000 and JBIG2 images not showing (common in scanned PDFs).
