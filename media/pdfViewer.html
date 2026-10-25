@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}} 'unsafe-inline'; script-src 'nonce-{{nonce}}'; worker-src blob:; img-src {{cspSource}} data: blob:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}} 'unsafe-inline'; script-src 'nonce-{{nonce}}' 'wasm-unsafe-eval'; connect-src {{cspSource}}; worker-src blob:; img-src {{cspSource}} data: blob:;">
     <link href="{{styleUri}}" rel="stylesheet">
     <title>PDF Viewer</title>
 </head>
@@ -43,7 +43,6 @@
         let currentPage = 1;
         let scale = 1.0;
         const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
 
         const textLayerDiv = document.getElementById('text-layer');
         const pageWrapper = document.getElementById('page-wrapper');
@@ -64,16 +63,11 @@
             canvas.height = viewport.height;
             canvas.width = viewport.width;
 
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-
-            await page.render(renderContext).promise;
+            await page.render({ canvas, viewport }).promise;
 
             // Clear previous text layer
             textLayerDiv.replaceChildren();
-            textLayerDiv.style.setProperty('--scale-factor', scale.toString());
+            textLayerDiv.style.setProperty('--total-scale-factor', (viewport.scale * viewport.userUnit).toString());
 
             // Render text layer for selectable text
             const textContent = await page.getTextContent();
@@ -89,7 +83,7 @@
 
         async function init() {
             try {
-                pdfDoc = await pdfjsLib.getDocument({ data: pdfArray }).promise;
+                pdfDoc = await pdfjsLib.getDocument({ data: pdfArray, wasmUrl: '{{pdfWasmUri}}' }).promise;
                 document.getElementById('total-pages').textContent = pdfDoc.numPages;
                 await renderPage(currentPage);
             } catch (error) {

@@ -94,6 +94,7 @@ suite('HTML Template', () => {
 			'{{styleUri}}',
 			'{{pdfJsUri}}',
 			'{{pdfWorkerUri}}',
+			'{{pdfWasmUri}}',
 			'{{grayscale}}',
 			'{{pdfBase64}}',
 		];
@@ -112,6 +113,10 @@ suite('HTML Template', () => {
 		assert.ok(
 			html.includes('Content-Security-Policy'),
 			'Template should include a Content-Security-Policy meta tag'
+		);
+		assert.ok(
+			html.includes("'wasm-unsafe-eval'") && html.includes('connect-src {{cspSource}}'),
+			'CSP must let pdf.js fetch and compile its wasm image decoders'
 		);
 	});
 
@@ -133,6 +138,7 @@ suite('HTML Template', () => {
 			.replace(/\{\{styleUri\}\}/g, 'https://test/style.css')
 			.replace(/\{\{pdfJsUri\}\}/g, 'https://test/pdf.min.mjs')
 			.replace(/\{\{pdfWorkerUri\}\}/g, 'https://test/pdf.worker.min.mjs')
+			.replace(/\{\{pdfWasmUri\}\}/g, 'https://test/wasm/')
 			.replace(/\{\{grayscale\}\}/g, 'false')
 			.replace(/\{\{pdfBase64\}\}/g, 'dGVzdA==');
 
@@ -185,6 +191,13 @@ suite('PDF.js Dependencies', () => {
 			fs.existsSync(path.join(nodeModulesDir, 'pdf.worker.min.mjs')),
 			'pdf.worker.min.mjs should exist'
 		);
+	});
+
+	test('pdfjs-dist wasm decoders should exist', () => {
+		const wasmDir = path.resolve(nodeModulesDir, '../wasm');
+		for (const file of ['openjpeg.wasm', 'jbig2.wasm', 'qcms_bg.wasm']) {
+			assert.ok(fs.existsSync(path.join(wasmDir, file)), `${file} should exist`);
+		}
 	});
 });
 

@@ -46,6 +46,7 @@ const extensionConfig = {
       patterns: [
         { from: 'node_modules/pdfjs-dist/build/pdf.min.mjs', to: 'pdfjs/pdf.min.mjs' },
         { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs', to: 'pdfjs/pdf.worker.min.mjs' },
+        { from: 'node_modules/pdfjs-dist/wasm', to: 'pdfjs/wasm', globOptions: { ignore: ['**/quickjs-eval.*'] } },
       ],
     }),
   ],

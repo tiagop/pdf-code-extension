@@ -47,6 +47,9 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
         const pdfWorkerUri = webviewPanel.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'pdfjs', 'pdf.worker.min.mjs')
         );
+        const pdfWasmUri = webviewPanel.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'pdfjs', 'wasm')
+        );
         const styleUri = webviewPanel.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'pdfViewer.css')
         );
@@ -56,6 +59,7 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
             pdfBase64,
             pdfJsUri,
             pdfWorkerUri,
+            pdfWasmUri,
             styleUri,
             this.context.workspaceState.get<boolean>(grayscaleKey, false)
         );
@@ -66,6 +70,7 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
         pdfBase64: string,
         pdfJsUri: vscode.Uri,
         pdfWorkerUri: vscode.Uri,
+        pdfWasmUri: vscode.Uri,
         styleUri: vscode.Uri,
         grayscale: boolean
     ): string {
@@ -79,6 +84,8 @@ export class PdfEditorProvider implements vscode.CustomReadonlyEditorProvider<vs
             .replace(/\{\{styleUri\}\}/g, styleUri.toString())
             .replace(/\{\{pdfJsUri\}\}/g, pdfJsUri.toString())
             .replace(/\{\{pdfWorkerUri\}\}/g, pdfWorkerUri.toString())
+            // pdf.js appends file names to wasmUrl, so it needs the trailing slash
+            .replace(/\{\{pdfWasmUri\}\}/g, `${pdfWasmUri.toString()}/`)
             .replace(/\{\{grayscale\}\}/g, String(grayscale))
             .replace(/\{\{pdfBase64\}\}/g, pdfBase64);
 

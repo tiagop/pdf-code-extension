@@ -2,8 +2,10 @@
 
 All notable changes to the "pdf-viewer-for-vs-code" extension will be documented in this file.
 
-## [1.0.5] - 2026-10-25
+## [Unreleased]
 
+- Update PDF.js to 6.4.
+- Fix JPEG 2000 and JBIG2 images not showing (common in scanned PDFs).
 - Fix some PDFs only showing a small strip of the page with a scrollbar.
 - Grayscale toggle now follows the VS Code theme and exposes its state to screen readers.
 - Grayscale setting is remembered per PDF within a workspace, across reloads and reopening.
