@@ -129,6 +129,12 @@ suite('HTML Template', () => {
 		);
 	});
 
+	test('Template should not inject PDF-derived text as HTML', () => {
+		const htmlPath = path.join(mediaDir, 'pdfViewer.html');
+		const html = fs.readFileSync(htmlPath, 'utf8');
+		assert.ok(!html.includes('innerHTML'), 'Use textContent instead of innerHTML');
+	});
+
 	test('All placeholders should be replaceable', () => {
 		const htmlPath = path.join(mediaDir, 'pdfViewer.html');
 		let html = fs.readFileSync(htmlPath, 'utf8');
