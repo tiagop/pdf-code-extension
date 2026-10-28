@@ -2,6 +2,11 @@
 
 All notable changes to the "pdf-viewer-for-vs-code" extension will be documented in this file.
 
+## [1.0.7] - 2026-10-28
+
+- PDF loading errors are shown as plain text instead of HTML.
+- Update dependencies and fix serialize-javascript security alerts in build tooling.
+
 ## [1.0.6] - 2026-10-25
 
 - Update PDF.js to 6.4.

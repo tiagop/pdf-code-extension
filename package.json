@@ -2,7 +2,7 @@
   "name": "pdf-viewer-for-vs-code",
   "displayName": "PDF Viewer - VS Code Extension",
   "description": "Extension that allows to visualize PDF files inside VS Code.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "publisher": "Pirespt",
   "icon": "assets/images/PDFViewer.png",
   "repository": {
